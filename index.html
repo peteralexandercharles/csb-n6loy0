@@ -1,77 +1,102 @@
-<p><video id="video" autoplay width=320/><p>
-  <p><button onclick="startFunction()">Grab video & start recording</button></p>
-  <p><button onclick="download()">Download! (and stop video)</button></p>
-  
-  <script>
-    if (navigator.mediaDevices) {
-  console.log("getUserMedia supported.");
+<!DOCTYPE html>
 
-  const constraints = { audio: true };
-  let chunks = [];
+<!--
+Copyright 2017 Google Inc.
 
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then((stream) => {
-      const mediaRecorder = new MediaRecorder(stream);
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-      visualize(stream);
+    http://www.apache.org/licenses/LICENSE-2.0
 
-      record.onclick = () => {
-        mediaRecorder.start();
-        console.log(mediaRecorder.state);
-        console.log("recorder started");
-        record.style.background = "red";
-        record.style.color = "black";
-      };
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 
-      stop.onclick = () => {
-        mediaRecorder.stop();
-        console.log(mediaRecorder.state);
-        console.log("recorder stopped");
-        record.style.background = "";
-        record.style.color = "";
-      };
-
-      mediaRecorder.onstop = (e) => {
-        console.log("data available after MediaRecorder.stop() called.");
-
-        const clipName = prompt("Enter a name for your sound clip");
-
-        const clipContainer = document.createElement("article");
-        const clipLabel = document.createElement("p");
-        const audio = document.createElement("audio");
-        const deleteButton = document.createElement("button");
-
-        clipContainer.classList.add("clip");
-        audio.setAttribute("controls", "");
-        deleteButton.textContent = "Delete";
-        clipLabel.textContent = clipName;
-
-        clipContainer.appendChild(audio);
-        clipContainer.appendChild(clipLabel);
-        clipContainer.appendChild(deleteButton);
-        soundClips.appendChild(clipContainer);
-
-        audio.controls = true;
-        const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-        chunks = [];
-        const audioURL = URL.createObjectURL(blob);
-        audio.src = audioURL;
-        console.log("recorder stopped");
-
-        deleteButton.onclick = (e) => {
-          const evtTgt = e.target;
-          evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+<html lang="en">
+  <head>
+    <script>
+      //  philipwalton.com/articles/the-google-analytics-setup-i-use-on-every-site-i-build
+      window.ga =
+        window.ga ||
+        function () {
+          (ga.q = ga.q || []).push(arguments);
         };
-      };
+      ga("create", "UA-33848682-1", "auto");
+      ga("set", "transport", "beacon");
+      ga("send", "pageview");
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
 
-      mediaRecorder.ondataavailable = (e) => {
-        chunks.push(e.data);
-      };
-    })
-    .catch((err) => {
-      console.error(`The following error occurred: ${err}`);
-    });
-}
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Simplest possible examples of HTML, CSS and JavaScript."
+    />
+    <meta name="author" content="//samdutton.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      itemprop="name"
+      content="simpl.info: simplest possible examples of HTML, CSS and JavaScript"
+    />
+    <meta itemprop="image" content="/images/icons/icon192.png" />
+    <meta id="theme-color" name="theme-color" content="#fff" />
 
-  </script>
+    <link rel="icon" href="/images/icons/icon192.png" />
+
+    <base target="_blank" />
+
+    <title>MediaRecorder: video only</title>
+
+    <link rel="canonical" href="https://simpl.info/mediarecorder" />
+
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+
+  <body>
+    <div id="container">
+      <h1>
+        <a href="../index.html" title="simpl.info home page">simpl.info</a>
+        MediaRecorder: video only
+      </h1>
+
+      <p>
+        This demo requires Firefox 29 or later, or Chrome 47 or later with
+        <strong>Enable experimental Web Platform features</strong> enabled from
+        chrome://flags.
+      </p>
+
+      <p>
+        For more information see the MediaStream Recording API
+        <a
+          href="http://w3c.github.io/mediacapture-record/MediaRecorder.html"
+          title="W3C MediaStream Recording API Editor's Draft"
+          >Editor's&nbsp;Draft</a
+        >.
+      </p>
+
+      <video id="gum" autoplay muted playsinline></video>
+      <video id="recorded" autoplay loop controls playsinline></video>
+
+      <div>
+        <button id="record">Start Recording</button>
+        <button id="play" disabled>Play</button>
+        <button id="download" disabled>Download</button>
+      </div>
+
+      <a
+        href="https://github.com/samdutton/simpl/blob/gh-pages/mediarecorder"
+        title="View source for this page on GitHub"
+        id="viewSource"
+        >View source on GitHub</a
+      >
+    </div>
+
+    <script src="script.js"></script>
+    <script src="../../js/lib/ga.js"></script>
+  </body>
+</html>
